@@ -149,7 +149,7 @@ function FileInput(props: any) {
     return picker;
   };
   
-  const { children, useFilestack, onChange, maxFiles, apiKey, workspace, uploadHost } = props;
+  const { children, useFilestack, onChange, maxFiles, apiKey, workspace, uploadHost, environment } = props;
   const { error, value, originalFile } = state;
   return (
     <>
@@ -186,6 +186,7 @@ function FileInput(props: any) {
                     <FileChooser
                       apiKey={apiKey}
                       workspace={workspace}
+                      environment={environment}
                       uploadHost={uploadHost}
                       onUploadDone={async (item, _originalFile) => {
                         let result: FileInputValue = item;
