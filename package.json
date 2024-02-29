@@ -1,5 +1,5 @@
 {
-  "name": "8base-file-manager",
+  "name": "@8base/file-manager",
   "version": "1.0.0",
   "main": "dist/index.js",
   "module": "dist/index.js",
