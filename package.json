@@ -14,5 +14,11 @@
   },
   "dependencies": {
     "react-dropzone": "^14.2.3"
+  },
+  "peerDependencies": {
+    "@apollo/client": "^3.3.7",
+    "graphql": "^15.5.0",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1"
   }
 }
