@@ -139,7 +139,7 @@ function FileChooser({
 
     const requestOptions: RequestInit = {
       method: 'POST',
-      headers: myHeaders,
+      headers: headers,
       body: formdata,
       redirect: 'follow' as RequestRedirect,
     };

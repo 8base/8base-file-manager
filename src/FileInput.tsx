@@ -189,7 +189,15 @@ function FileInput(props: any) {
                       uploadHost={uploadHost}
                       onUploadDone={async (item, _originalFile) => {
                         let result: FileInputValue = item;
-                        console.log(result);
+                        if (typeof onUploadDone === 'function') {
+                          result = await props.onUploadDone(item, originalFile);
+                        }
+                        setState(prevState => ({
+                          ...prevState,
+                          value: item,
+                          originalFile: originalFile,
+                        }));
+                        closeModal();
                         return result;
                       } }
                       onChange={(value, originalFile) => {
