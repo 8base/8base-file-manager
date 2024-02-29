@@ -1,4 +1,4 @@
-import { FetchPolicy } from 'apollo-client';
+import { FetchPolicy } from '@apollo/client';
 
 export type FileValue = {
   fileId: string;
