@@ -13,6 +13,7 @@ interface IFileChooserProps {
   workspace?: string;
   apiKey?: string;
   uploadHost?: string | 'http://localhost:3007';
+  environment?: string
 }
 
 const FILE_UPLOAD_INFO_QUERY = gql`
@@ -35,6 +36,7 @@ function FileChooser({
   workspace,
   apiKey,
   uploadHost,
+  environment,
 }: IFileChooserProps) {
   const [files, setFiles] = useState<File[]>([]);
   const [path, setPath] = useState<string>('');
@@ -116,14 +118,17 @@ function FileChooser({
   };
 
   const uploadToS3 = async (files: File[]) => {
-    const myHeaders = new Headers();
+    const headers = new Headers();
     setUploading(true);
-    myHeaders.append('storage-provider', 'S3');
+    headers.append('storage-provider', 'S3');
     if (apiKey) {
-      myHeaders.append('authorization', apiKey);
+      headers.append('authorization', apiKey);
     }
     if (workspace) {
-      myHeaders.append('workspace', workspace);
+      headers.append('workspace', workspace);
+    }
+    if (environment) {
+      headers.append('environment', environment);
     }
 
     const formdata = new FormData();
