@@ -52,7 +52,7 @@ function FileChooser({
     width: '120px',
     height: '150px',
     border: '1px solid #e0e0e0',
-    borderRadius: '8px',
+    borderRadius: '2px',
     margin: '10px',
     overflow: 'hidden',
     display: 'flex',
