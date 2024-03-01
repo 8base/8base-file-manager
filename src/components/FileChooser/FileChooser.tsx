@@ -191,7 +191,7 @@ function FileChooser({
         <div className={CONTENT_STYLES.listWrapper}>
           {/* {files.length > 0 && memoizedRenderTableFields} */}
           {files.map((el, index) => (
-            <div className={FILE_PREVIEW_STYLES.itemWrapper}>
+            <div className={FILE_PREVIEW_STYLES.itemWrapper} key={index}>
               <img src={URL.createObjectURL(el)} alt={`Preview ${index}`} className={FILE_PREVIEW_STYLES.image} />
               <div className={FILE_PREVIEW_STYLES.details}>
                 <span>{el.name}</span>
