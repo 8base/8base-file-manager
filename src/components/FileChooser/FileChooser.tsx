@@ -2,9 +2,13 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { useQuery, gql, ApolloError } from '@apollo/client';
 import * as filestack from 'filestack-js';
-import { FileInputValue, OriginalFileInputValue } from './types';
+import { FileInputValue, OriginalFileInputValue } from '../../types';
 import { Accept, useDropzone } from 'react-dropzone';
-
+import { COMMON_STYLES, CONTENT_STYLES, DROPZONE_STYLES } from './FileChooser.styles';
+import { CloseIcon } from './CloseIcon'
+import { DropzoneState } from 'react-dropzone';
+import { PickerOptions } from 'filestack-js';
+import { FILE_PREVIEW_STYLES } from './FilePicker.styles'
 interface IFileChooserProps {
   maxFiles?: number;
   onUploadDone?: (value: FileInputValue, originalFile: OriginalFileInputValue) => Promise<FileInputValue>;
@@ -38,11 +42,13 @@ function FileChooser({
   apiKey,
   uploadHost,
   environment,
+  hideFilePicker,
 }: IFileChooserProps) {
   const [files, setFiles] = useState<File[]>([]);
   const [path, setPath] = useState<string>('');
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
+  const [options, setOptions] = useState<PickerOptions>({});
 
   const cardsContainerStyle: React.CSSProperties = {
     display: 'flex',
@@ -108,14 +114,6 @@ function FileChooser({
     } else {
       setFiles([acceptedFiles[0]]);
     }
-  };
-
-  const removeFile = (index: number) => {
-    setFiles(prevFiles => {
-      const updatedFiles = [...prevFiles];
-      updatedFiles.splice(index, 1);
-      return updatedFiles;
-    });
   };
 
   const uploadToS3 = async (files: File[]) => {
@@ -186,7 +184,9 @@ function FileChooser({
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
-    accept: ('image/*' as unknown) as Accept,
+    accept: options && options.accept ? options.accept : undefined,
+    maxFiles: options && options.maxFiles ? options.maxFiles : undefined,
+    maxSize: options && options.maxSize ? options.maxSize : undefined,
   });
 
   const renderTableFields = () => {
@@ -234,35 +234,83 @@ function FileChooser({
   if (error) {
     return <div>Error: {error.message}</div>;
   }
+  
+  type FilePickerDropZoneProps = {
+    getRootProps: DropzoneState['getRootProps'];
+    getInputProps: DropzoneState['getInputProps'];
+  };
+  
+  const shouldShowUploadMoreBtn = (options: FilePickerContentProps['options'], length: number) => {
+    if (options && options.maxFiles) {
+      return length < options.maxFiles;
+    }
+  
+    return true;
+  };
+  
+  const shouldShowUploadBtn = (options: FilePickerContentProps['options'], length: number) => {
+    if (options && options.minFiles) {
+      return length >= options.minFiles;
+    }
+  
+    return true;
+  };
+
+  const removeFile = (index: number) => {
+    setFiles(prevFiles => {
+      const updatedFiles = [...prevFiles];
+      updatedFiles.splice(index, 1);
+      return updatedFiles;
+    });
+  };
 
   return (
-    <div>
-      <div {...getRootProps()} style={dropzoneStyle}>
+    <>
+      <div className={CONTENT_STYLES.header}>
+        <div className={CONTENT_STYLES.closeWrapper} onClick={hideFilePicker}>
+          <CloseIcon />
+        </div>
+      </div>
+      {/* <FilePickerDropZone getRootProps={getRootProps} getInputProps={getInputProps} /> */}
+      <div className={DROPZONE_STYLES.wrapper} {...getRootProps()}>
         <input {...getInputProps()} />
         {isDragActive ? <p>Drop the files here...</p> : <p>Drag and drop some files here, or click to select files</p>}
       </div>
-
-      {files.length > 0 && memoizedRenderTableFields}
-
-      {uploadProgress > 0 && <p>Uploading... {uploadProgress}%</p>}
-
-      <button
-        type="button"
-        onClick={handleUpload}
-        disabled={uploading || files.length === 0}
-        style={{
-          marginTop: '10px',
-          padding: '8px',
-          background: uploading || files.length === 0 ? '#dcdcdc' : '#0874F9',
-          color: uploading || files.length === 0 ? '#808080' : '#fff',
-          border: 'none',
-          borderRadius: '4px',
-          cursor: 'pointer',
-        }}
-      >
-        Upload
-      </button>
-    </div>
+      <>
+          <div className={CONTENT_STYLES.header}>
+            <div className={CONTENT_STYLES.headerTitle}>Selected Files</div>
+          </div>
+          <div className={CONTENT_STYLES.listWrapper}>
+            {/* {files.length > 0 && memoizedRenderTableFields} */}
+            {files.map((el, index) => (
+              <div className={FILE_PREVIEW_STYLES.itemWrapper}>
+                <img src={URL.createObjectURL(el)} alt={`Preview ${index}`} className={FILE_PREVIEW_STYLES.image} />
+                <div className={FILE_PREVIEW_STYLES.details}>
+                  <span>{el.name}</span>
+                  <span>{uploadProgress > 0 && <p>Uploading... {uploadProgress}%</p>}</span>
+                </div>
+                <div className={FILE_PREVIEW_STYLES.removeWrapper} onClick={() => removeFile(el)}>
+                  <CloseIcon />
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className={CONTENT_STYLES.footer}>
+            {/* {shouldShowUploadMoreBtn(options, files.length) && (
+              <button className={COMMON_STYLES.button} onClick={setUploadMoreStep}>
+                Upload more
+              </button>
+            )} */}
+            {shouldShowUploadBtn(options, files.length) && (
+              <button className={COMMON_STYLES.button} onClick={handleUpload}>
+                Upload
+              </button>
+            )}
+          </div>
+        </>
+      {/* {files.length > 0 && memoizedRenderTableFields}
+      {uploadProgress > 0 && <p>Uploading... {uploadProgress}%</p>} */}
+    </>
   );
 };
 
