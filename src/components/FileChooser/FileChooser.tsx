@@ -197,7 +197,7 @@ function FileChooser({
                 <span>{el.name}</span>
                 <span>{uploadProgress > 0 && <p>Uploading... {uploadProgress}%</p>}</span>
               </div>
-              <div className={FILE_PREVIEW_STYLES.removeWrapper} onClick={() => removeFile(el)}>
+              <div className={FILE_PREVIEW_STYLES.removeWrapper} onClick={() => removeFile(index)}>
                 <CloseIcon />
               </div>
             </div>
