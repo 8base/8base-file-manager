@@ -1,6 +1,6 @@
 {
   "name": "@8base/file-manager",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "dist/index.js",
   "module": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -9,16 +9,19 @@
   "scripts": {
     "build": "tsc -p ."
   },
-  "devDependencies": {
-    "@types/react": "^18.2.61",
-    "typescript": "^5.3.3"
-  },
-  "dependencies": {
-    "react-dropzone": "^14.2.3",
+  "peerDependencies": {
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
     "@apollo/client": "^3.3.7",
     "apollo-client": "^2.6.10",
-    "graphql": "^15.5.0",
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1"
+    "graphql": "^15.5.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.61",
+    "typescript": "^5.3.3",
+    "@types/react-dom": "^18.0.9"
+  },
+  "dependencies": {
+    "react-dropzone": "^14.2.3"
   }
 }
