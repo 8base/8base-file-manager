@@ -182,7 +182,7 @@ function FileChooser({
       {/* <FilePickerDropZone getRootProps={getRootProps} getInputProps={getInputProps} /> */}
       <div className={DROPZONE_STYLES.wrapper} {...getRootProps()}>
         <input {...getInputProps()} />
-        {isDragActive ? <p>Drop the files here...</p> : <p>Drag and drop some files here, or click to select files</p>}
+        {isDragActive ? <p style={{ color: '#000' }}>Drop the files here...</p> : <p style={{ color: '#000' }}>Drag and drop some files here, or click to select files</p>}
       </div>
       <>
         <div className={CONTENT_STYLES.header}>
