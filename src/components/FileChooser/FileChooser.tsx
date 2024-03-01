@@ -1,9 +1,8 @@
 // @ts-nocheck
 import React, { useEffect, useMemo, useState } from 'react'
 import { useQuery, gql, ApolloError } from '@apollo/client';
-import * as filestack from 'filestack-js';
 import { FileInputValue, OriginalFileInputValue } from '../../types';
-import { Accept, useDropzone } from 'react-dropzone';
+import { useDropzone } from 'react-dropzone';
 import { COMMON_STYLES, CONTENT_STYLES, DROPZONE_STYLES } from './FileChooser.styles';
 import { CloseIcon } from './CloseIcon'
 import { DropzoneState } from 'react-dropzone';
@@ -49,56 +48,7 @@ function FileChooser({
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
   const [options, setOptions] = useState<PickerOptions>({});
-
-  const cardsContainerStyle: React.CSSProperties = {
-    display: 'flex',
-    flexWrap: 'wrap',
-  };
-
-  const cardStyle: React.CSSProperties = {
-    width: '120px',
-    height: '150px',
-    border: '1px solid #e0e0e0',
-    borderRadius: '2px',
-    margin: '10px',
-    overflow: 'hidden',
-    display: 'flex',
-    flexDirection: 'column',
-  };
-
-  const cardBodyStyle: React.CSSProperties = {
-    padding: '8px',
-    flex: 1,
-    display: 'flex',
-    height: '100%',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-  };
-
-  const imageStyle: React.CSSProperties = {
-    objectFit: 'cover',
-    height: 'auto',
-    marginBottom: '8px',
-    borderRadius: '4px',
-  };
-
-  const fileNameStyle: React.CSSProperties = {
-    fontSize: '12px',
-    fontWeight: 'bold',
-    textAlign: 'center',
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    whiteSpace: 'nowrap',
-  };
-
-  const dropzoneStyle: React.CSSProperties = {
-    border: '2px dashed #cccccc',
-    borderRadius: '4px',
-    padding: '20px',
-    textAlign: 'center',
-    cursor: 'pointer',
-  };
+  const [uploadMore, setUploadMoreStep] = useState<boolean>(false)
 
   const [error, setError] = useState<Error | null>(null);
 
@@ -173,10 +123,6 @@ function FileChooser({
       onChange(value, originalFile);
     }
 
-    if (maxFiles === 1) {
-      // setFiles([value[0]]);
-    }
-
     if (typeof onUploadDone === 'function') {
       onUploadDone(value, originalFile);
     }
@@ -188,44 +134,6 @@ function FileChooser({
     maxFiles: options && options.maxFiles ? options.maxFiles : undefined,
     maxSize: options && options.maxSize ? options.maxSize : undefined,
   });
-
-  const renderTableFields = () => {
-    return (
-      <div style={cardsContainerStyle}>
-        {files.length > 0 &&
-          files.map((file, index) => (
-            <div key={index} style={cardStyle}>
-              <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-                <button
-                  onClick={() => removeFile(index)}
-                  style={{
-                    position: 'absolute',
-                    top: '0',
-                    right: '0',
-                    padding: '4px',
-                    cursor: 'pointer',
-                    zIndex: 1,
-                    background: 'transparent',
-                    border: 'none',
-                    transition: 'color 0.3s ease',
-                  }}
-                  onMouseOver={(e: React.MouseEvent<HTMLButtonElement>) => (e.currentTarget.style.color = 'blue')}
-                  onMouseOut={(e: React.MouseEvent<HTMLButtonElement>) => (e.currentTarget.style.color = 'gray')}
-                >
-                  X
-                </button>
-                <div style={cardBodyStyle}>
-                  <img src={URL.createObjectURL(file)} alt={`Preview ${index}`} style={imageStyle} />
-                  <p style={fileNameStyle}>{file.name}</p>
-                </div>
-              </div>
-            </div>
-          ))}
-      </div>
-    );
-  };
-
-  const memoizedRenderTableFields = useMemo(() => renderTableFields(), [files]);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -277,39 +185,32 @@ function FileChooser({
         {isDragActive ? <p>Drop the files here...</p> : <p>Drag and drop some files here, or click to select files</p>}
       </div>
       <>
-          <div className={CONTENT_STYLES.header}>
-            <div className={CONTENT_STYLES.headerTitle}>Selected Files</div>
-          </div>
-          <div className={CONTENT_STYLES.listWrapper}>
-            {/* {files.length > 0 && memoizedRenderTableFields} */}
-            {files.map((el, index) => (
-              <div className={FILE_PREVIEW_STYLES.itemWrapper}>
-                <img src={URL.createObjectURL(el)} alt={`Preview ${index}`} className={FILE_PREVIEW_STYLES.image} />
-                <div className={FILE_PREVIEW_STYLES.details}>
-                  <span>{el.name}</span>
-                  <span>{uploadProgress > 0 && <p>Uploading... {uploadProgress}%</p>}</span>
-                </div>
-                <div className={FILE_PREVIEW_STYLES.removeWrapper} onClick={() => removeFile(el)}>
-                  <CloseIcon />
-                </div>
+        <div className={CONTENT_STYLES.header}>
+          <div className={CONTENT_STYLES.headerTitle}>Selected Files</div>
+        </div>
+        <div className={CONTENT_STYLES.listWrapper}>
+          {/* {files.length > 0 && memoizedRenderTableFields} */}
+          {files.map((el, index) => (
+            <div className={FILE_PREVIEW_STYLES.itemWrapper}>
+              <img src={URL.createObjectURL(el)} alt={`Preview ${index}`} className={FILE_PREVIEW_STYLES.image} />
+              <div className={FILE_PREVIEW_STYLES.details}>
+                <span>{el.name}</span>
+                <span>{uploadProgress > 0 && <p>Uploading... {uploadProgress}%</p>}</span>
               </div>
-            ))}
-          </div>
-          <div className={CONTENT_STYLES.footer}>
-            {/* {shouldShowUploadMoreBtn(options, files.length) && (
-              <button className={COMMON_STYLES.button} onClick={setUploadMoreStep}>
-                Upload more
-              </button>
-            )} */}
-            {shouldShowUploadBtn(options, files.length) && (
-              <button className={COMMON_STYLES.button} onClick={handleUpload}>
-                Upload
-              </button>
-            )}
-          </div>
-        </>
-      {/* {files.length > 0 && memoizedRenderTableFields}
-      {uploadProgress > 0 && <p>Uploading... {uploadProgress}%</p>} */}
+              <div className={FILE_PREVIEW_STYLES.removeWrapper} onClick={() => removeFile(el)}>
+                <CloseIcon />
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className={CONTENT_STYLES.footer}>
+          {shouldShowUploadBtn(options, files.length) && (
+            <button className={COMMON_STYLES.button} onClick={handleUpload}>
+              Upload
+            </button>
+          )}
+        </div>
+      </>
     </>
   );
 };
