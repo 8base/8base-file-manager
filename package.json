@@ -1,6 +1,6 @@
 {
   "name": "@8base/file-manager",
-  "version": "1.0.4",
+  "version": "1.0.6",
   "main": "dist/index.js",
   "module": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -10,21 +10,53 @@
     "build": "tsc -p ."
   },
   "peerDependencies": {
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6",
-    "apollo-client": "^2.6.10",
-    "graphql": "^15.5.0",
-    "@apollo/client": "^3.2.2"
-  },
-  "devDependencies": {
-    "@types/react": "^18.2.61",
-    "typescript": "^5.3.3",
-    "@types/react-dom": "^18.0.9"
+    "apollo-client": "^2.6.3",
+    "graphql": "^14.0.0",
+    "react": "^16.13.1",
+    "react-apollo": "^3.1.0",
+    "react-dom": "^16.14.0"
   },
   "dependencies": {
-    "react-dropzone": "^14.2.3",
-    "apollo-client": "^2.6.10",
+    "@apollo/client": "^3.9.5",
     "@emotion/css": "^11.1.3",
-    "@apollo/client": "^3.2.2"
+    "filestack-js": "3.7.0",
+    "graphql-tag": "^2.10.0",
+    "react-dropzone": "^11.3.4"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.4.3",
+    "@types/graphql": "^14.2.0",
+    "@types/jest": "^24.0.13",
+    "apollo-client": "^2.6.3",
+    "babel-jest": "^24.8.0",
+    "graphql": "^14.3.1",
+    "jest": "24.7.1",
+    "react-test-renderer": "^16.8.6",
+    "ts-jest": "^24.0.2",
+    "typescript": "^4.1.3"
+  },
+  "jest": {
+    "globals": {
+      "ts-jest": {
+        "tsConfig": "<rootDir>/tsconfig.json"
+      }
+    },
+    "collectCoverageFrom": [
+      "<rootDir>/src/**",
+      "!<rootDir>/**/__tests__/**"
+    ],
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx"
+    ],
+    "transform": {
+      "^.+\\.(ts|tsx)$": "ts-jest"
+    },
+    "testMatch": [
+      "**/__tests__/**/*.[jt]s?(x)",
+      "**/?(*.)+(spec|test).[jt]s?(x)"
+    ]
   }
 }
