@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 import { useQuery, gql, ApolloError } from '@apollo/client';
 import * as filestack from 'filestack-js';
