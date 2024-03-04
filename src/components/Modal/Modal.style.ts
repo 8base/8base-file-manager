@@ -16,7 +16,7 @@ export const MODAL_STYLE: Record<StylesComponents, string> = {
   content: css`
     width: 100%;
     height: 100%;
-    background: #fff;
+    background: #eeeeee;
     display: flex;
     flex: 1;
     flex-direction: column;

@@ -10,16 +10,15 @@
     "build": "tsc -p ."
   },
   "peerDependencies": {
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6",
+    "react": "^16.13.1",
+    "react-dom": "^16.8.1",
     "apollo-client": "^2.6.10",
     "graphql": "^15.5.0",
     "@apollo/client": "^3.2.2"
   },
   "devDependencies": {
     "@types/react": "^18.2.61",
-    "typescript": "^5.3.3",
-    "@types/react-dom": "^18.0.9"
+    "typescript": "^5.3.3"
   },
   "dependencies": {
     "react-dropzone": "^14.2.3",
