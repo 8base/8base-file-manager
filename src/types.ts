@@ -1,5 +1,6 @@
 import { FetchPolicy } from 'apollo-client';
 import { PickerOptions } from 'filestack-js';
+import React from 'react';
 
 export type FileValue = {
   fileId: string;
@@ -28,7 +29,7 @@ export type AWSRenderPropType = Omit<RenderPropType, 'pick'> & {
 
 export type CommonFileInputProps = {
   onChange?: (value: FileInputValue, originalFile: OriginalFileInputValue) => void;
-  children: (args: RenderPropType) => JSX.Element;
+  children: (args: RenderPropType) => React.JSX.Element;
   public?: boolean;
   fetchPolicy?: FetchPolicy;
   maxFiles?: number;
@@ -50,7 +51,7 @@ export type FilestackFileInputProps = CommonFileInputProps & {
 }
 
 export type AWSFileInputProps = Omit<CommonFileInputProps, 'children'> & {
-  children: (args: AWSRenderPropType) => JSX.Element;
+  children: (args: AWSRenderPropType) => React.JSX.Element;
   fallbackOptions?: PickerOptions;
   useFilestack?: boolean;
   environment?: string;
