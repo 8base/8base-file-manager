@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 
 import { PickerOptions } from 'filestack-js';
-import gql from 'graphql-tag';
-import { useQuery } from 'react-apollo';
-
+import { useQuery, gql, ApolloError } from '@apollo/client';
 import { FileInputAws } from './FileInput.aws';
 import { FileInputFilestack } from './FileInput.filestack';
 import { AWSFileInputProps, CommonFileInputProps, RenderPropType } from './types';

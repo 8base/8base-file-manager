@@ -1,8 +1,6 @@
 import React from 'react';
-import { withApollo, WithApolloClient } from 'react-apollo';
-import { ApolloClient } from 'apollo-client';
+import { useQuery, gql, ApolloError } from '@apollo/client';
 import * as filestack from 'filestack-js';
-import gql from 'graphql-tag';
 import { FilestackFileInputProps as FileInputProps, FileInputState } from './types';
 
 const FILE_UPLOAD_INFO_QUERY = gql`
@@ -17,162 +15,163 @@ const FILE_UPLOAD_INFO_QUERY = gql`
 `;
 
 // @ts-ignore
-const FileInputFilestack: React.ComponentType<FileInputProps> = withApollo(
+class FileInputFilestack extends React.Component<FileInputProps> {
   // @ts-ignore
-  class FileInput extends React.Component<WithApolloClient<FileInputProps>, FileInputState> {
-    // @ts-ignore
-    public static defaultProps = {
-      maxFiles: 1,
-      value: null,
-      sessionCache: false,
+  public static defaultProps = {
+    maxFiles: 1,
+    value: null,
+    sessionCache: false,
+  };
+
+  public static getDerivedStateFromProps(props: FileInputProps, state: FileInputState) {
+    let nextState = null;
+
+    if (props.value !== state.value) {
+      nextState = { value: props.value };
+    }
+
+    return nextState;
+  }
+
+  public filestack?: { [key: string]: any };
+  public filestackPromise?: Promise<void>;
+
+  constructor(props: FileInputProps) {
+    super(props);
+
+    this.state = {
+      error: null,
+      originalFile: null,
+      path: null,
+      value: props.value || null,
     };
+  }
 
-    public static getDerivedStateFromProps(props: FileInputProps, state: FileInputState) {
-      let nextState = null;
-
-      if (props.value !== state.value) {
-        nextState = { value: props.value };
-      }
-
-      return nextState;
+  public componentDidMount() {
+    this.filestackPromise = this.initFilestack();
+    if (this.props.fallbackOptions) {
+      this.pick(this.props.fallbackOptions);
     }
+  }
 
-    public filestack?: { [key: string]: any };
-    public filestackPromise?: Promise<void>;
+  public async initFilestack() {
+    const { sessionCache } = this.props;
 
-    constructor(props: FileInputProps & { client: ApolloClient<any> }) {
-      super(props);
+    let response = null;
 
-      this.state = {
-        error: null,
-        originalFile: null,
-        path: null,
-        value: props.value || null,
-      };
-    }
-
-    public componentDidMount() {
-      this.filestackPromise = this.initFilestack();
-      if (this.props.fallbackOptions) {
-        this.pick(this.props.fallbackOptions);
-      }
-    }
-
-    public async initFilestack() {
-      const { client, sessionCache } = this.props;
-
-      let response = null;
-
-      try {
-        response = await client.query({ query: FILE_UPLOAD_INFO_QUERY, fetchPolicy: this.props.fetchPolicy });
-      } catch (e) {
-        // @ts-ignore
-        this.setState({ error: e });
-
-        return;
-      }
-
-      const { apiKey, policy, signature, path } = response.data.fileUploadInfo;
-
-      this.setState({ path });
-
-      this.filestack = filestack.init(apiKey, {
-        security: {
-          policy,
-          signature,
-        },
-        sessionCache,
+    try {
+      const { data, loading } = useQuery(FILE_UPLOAD_INFO_QUERY, {
+        fetchPolicy: this.props.fetchPolicy
       });
+      response = data;
+    } catch (e) {
+      // @ts-ignore
+      this.setState({ error: e });
+
+      return;
     }
 
-    public onUploadDone = async ({ filesUploaded }: any) => {
-      if (!this.filestack) {
-        return;
-      }
+    const { apiKey, policy, signature, path } = response.data.fileUploadInfo;
 
-      const { policy = '""', signature = '""' } = this.filestack.session;
+    this.setState({ path });
 
-      let value = filesUploaded.map(({ handle, filename, url, mimetype }: any) => {
-        const urlOrigin = url ? new URL(url).origin : '';
+    this.filestack = filestack.init(apiKey, {
+      security: {
+        policy,
+        signature,
+      },
+      sessionCache,
+    });
+  }
 
-        return {
-          downloadUrl: `${urlOrigin}/security=p:${policy},s:${signature}/${handle}`,
-          fileId: handle,
-          filename,
-          mimetype,
-          public: !!this.props.public,
-        };
-      });
+  public onUploadDone = async ({ filesUploaded }: any) => {
+    if (!this.filestack) {
+      return;
+    }
 
-      let originalFile = filesUploaded.map((item: any) => item.originalFile);
+    const { policy = '""', signature = '""' } = this.filestack.session;
 
-      const { maxFiles, onUploadDone, onChange } = this.props;
-
-      if (maxFiles === 1) {
-        value = value[0];
-        originalFile = originalFile[0];
-      }
-
-      if (typeof onUploadDone === 'function') {
-        value = await onUploadDone(value, originalFile);
-      }
-
-      this.setState({ value, originalFile });
-
-      if (typeof onChange === 'function') {
-        onChange(value, originalFile);
-      }
-    };
-
-    public collectPickerOptions = () => {
-      const { maxFiles } = this.props;
-      const { path } = this.state;
+    let value = filesUploaded.map(({ handle, filename, url, mimetype }: any) => {
+      const urlOrigin = url ? new URL(url).origin : '';
 
       return {
-        exposeOriginalFile: true,
-        maxFiles,
-        onUploadDone: this.onUploadDone,
-        storeTo: {
-          path,
-        },
+        downloadUrl: `${urlOrigin}/security=p:${policy},s:${signature}/${handle}`,
+        fileId: handle,
+        filename,
+        mimetype,
+        public: !!this.props.public,
       };
-    };
+    });
 
-    public pick = async (options = {}) => {
-      await this.filestackPromise;
+    let originalFile = filesUploaded.map((item: any) => item.originalFile);
 
-      if (!this.filestack) {
-        return;
-      }
+    const { maxFiles, onUploadDone, onChange } = this.props;
 
-      if ('maxFiles' in options) {
-        console.warn('Specify "maxFiles" as a prop for FileInput component'); // tslint:disable-line
-      }
-
-      if ('onUploadDone' in options) {
-        console.warn('Specify "onUploadDone" as a prop for FileInput component'); // tslint:disable-line
-      }
-
-      const pickerOptions = this.collectPickerOptions();
-
-      const picker = this.filestack.picker({
-        ...options,
-        ...pickerOptions,
-      });
-
-      await picker.open();
-
-      return picker;
-    };
-
-    public render() {
-      const { children } = this.props;
-
-      const { error, value, originalFile } = this.state;
-
-      return children({ pick: this.pick, value, originalFile, error });
+    if (maxFiles === 1) {
+      value = value[0];
+      originalFile = originalFile[0];
     }
-  },
-);
+
+    if (typeof onUploadDone === 'function') {
+      value = await onUploadDone(value, originalFile);
+    }
+
+    this.setState({ value, originalFile });
+
+    if (typeof onChange === 'function') {
+      onChange(value, originalFile);
+    }
+  };
+
+  public collectPickerOptions = () => {
+    const { maxFiles } = this.props;
+    // @ts-ignore
+    const { path } = this.state;
+
+    return {
+      exposeOriginalFile: true,
+      maxFiles,
+      onUploadDone: this.onUploadDone,
+      storeTo: {
+        path,
+      },
+    };
+  };
+
+  public pick = async (options = {}) => {
+    await this.filestackPromise;
+
+    if (!this.filestack) {
+      return;
+    }
+
+    if ('maxFiles' in options) {
+      console.warn('Specify "maxFiles" as a prop for FileInput component'); // tslint:disable-line
+    }
+
+    if ('onUploadDone' in options) {
+      console.warn('Specify "onUploadDone" as a prop for FileInput component'); // tslint:disable-line
+    }
+
+    const pickerOptions = this.collectPickerOptions();
+
+    const picker = this.filestack.picker({
+      ...options,
+      ...pickerOptions,
+    });
+
+    await picker.open();
+
+    return picker;
+  };
+
+  public render() {
+    const { children } = this.props;
+    // @ts-ignore
+    const { error, value, originalFile } = this.state;
+
+    return children({ pick: this.pick, value, originalFile, error });
+  }
+}
 
 export { FileInputFilestack };

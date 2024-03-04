@@ -3,7 +3,7 @@ import { useState, useCallback, useEffect } from 'react';
 
 import axios from 'axios';
 import { PickerOptions } from 'filestack-js';
-import { useMutation } from 'react-apollo';
+import { useMutation } from '@apollo/client';
 import { useDropzone } from 'react-dropzone';
 
 import { CommonFileInputProps, FileInputState, FileValue } from 'src/types';
