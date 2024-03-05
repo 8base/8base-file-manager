@@ -40,6 +40,17 @@ export const COMMON_STYLES = {
   `,
 };
 
+export const ERROR_STYLES = css`
+  color: #ff0000; // Red color for error messages
+  font-size: 14px;
+  margin-top: 8px;
+  text-align: center;  // Center-align the text
+  padding: 16px;       // Add padding for better visual appeal
+  border: 1px solid #ff0000;  // Add border for emphasis
+  border-radius: 8px;  // Add border-radius for rounded corners
+  background-color: #ffe6e6;  // Light red background color
+`;
+
 export const CONTENT_STYLES = {
   closeWrapper: css`
     cursor: pointer;

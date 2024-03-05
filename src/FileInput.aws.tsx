@@ -139,6 +139,7 @@ export const FileInputAws: React.FC<AWSFileInputProps> = ({
           fileProgressList={ fileProgressList }
           getInputProps={ getInputProps }
           getRootProps={ getRootProps }
+          errorMessage= {error}
           options={ options }
         />
       </Modal>
