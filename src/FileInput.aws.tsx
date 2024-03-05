@@ -96,6 +96,7 @@ export const FileInputAws: React.FC<AWSFileInputProps> = ({
     originalFile,
     error,
   } = useFilePicker({ uploadCallback, controlledValue, onChange });
+  console.log(error);
 
   const pick = useCallback(
     (pickerOptions: PickerOptions = {}) => {
@@ -126,7 +127,7 @@ export const FileInputAws: React.FC<AWSFileInputProps> = ({
 
   return (
     <>
-      <Modal isOpen={ isOpen } onClose={ hideFilePicker }>
+      <Modal isOpen={ isOpen || !!error } onClose={ hideFilePicker }>
         <FilePickerContent
           step={ step }
           hideFilePicker={ hideFilePicker }

@@ -248,9 +248,10 @@ export const useFilePicker = ({
             console.log('uploaded file with error', file)
           }
         })
-        .catch(error => {
-          setError(error.response.data.error);          
-          setStep(STEPS.error);      
+        .catch(error => {        
+          setError(error.response.data.error);                   
+          setStep(STEPS.error);    
+            
         });
       }
     });
