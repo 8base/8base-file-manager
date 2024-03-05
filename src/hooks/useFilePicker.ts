@@ -87,6 +87,9 @@ export const useFilePicker = ({
     if (step === STEPS.uploading) {
       return null;
     }
+    if (step === STEPS.select) {
+      setError(null);
+    }
 
     setFileList([]);
     setStep(STEPS.select);
@@ -246,8 +249,8 @@ export const useFilePicker = ({
           }
         })
         .catch(error => {
-          console.log(error);
-          throw error; // Rethrow the error to ensure proper rejection
+          setError(error.response.data.error);          
+          setStep(STEPS.error);      
         });
       }
     });

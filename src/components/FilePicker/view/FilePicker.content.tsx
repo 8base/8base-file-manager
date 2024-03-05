@@ -8,7 +8,7 @@ import { STEPS } from '../FilePicker.constants';
 import { CloseIcon } from './CloseIcon';
 import { FilePickerDropZone, FilePickerDropZoneProps } from './FilePicker.dropzone';
 import { FilePreview } from './FilePicker.filePreview';
-import { COMMON_STYLES, CONTENT_STYLES } from './FilePicker.styles';
+import { COMMON_STYLES, CONTENT_STYLES, ERROR_STYLES } from './FilePicker.styles';
 
 type FilePickerContentProps = FilePickerDropZoneProps &
   Pick<
@@ -53,7 +53,9 @@ export const FilePickerContent = ({
   getRootProps,
   getInputProps,
   options,
+  errorMessage
 }: FilePickerContentProps) => {
+  const shouldShowError = errorMessage;
   switch (step) {
     case STEPS.select: {
       return (
@@ -64,6 +66,7 @@ export const FilePickerContent = ({
             </div>
           </div>
           <FilePickerDropZone getRootProps={getRootProps} getInputProps={getInputProps} />
+          {shouldShowError && <div className={ERROR_STYLES}>{errorMessage}</div>}
         </>
       );
     }
@@ -141,6 +144,21 @@ export const FilePickerContent = ({
               />
             ))}
           </div>
+        </>
+      );
+    }
+
+    case STEPS.error: {
+      return (
+        <>
+          <div className={CONTENT_STYLES.header}>
+            <div className={CONTENT_STYLES.closeWrapper} onClick={hideFilePicker}>
+              <CloseIcon />
+            </div>
+          </div>
+          <FilePickerDropZone getRootProps={getRootProps} getInputProps={getInputProps} />
+          {shouldShowError && <div className={ERROR_STYLES}>{errorMessage}</div>}
+
         </>
       );
     }

@@ -3,6 +3,7 @@ export const STEPS = {
   upload: 'upload',
   uploadMore: 'uploadMore',
   uploading: 'uploading',
+  error: 'error',
 } as const;
 
 export type StepType = keyof typeof STEPS;
