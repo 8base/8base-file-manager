@@ -23,7 +23,10 @@ type FilePickerContentProps = FilePickerDropZoneProps &
     | 'upload'
     | 'fileProgressList'
     | 'options'
-  >;
+    >& {
+      errorMessage?: string; 
+    };
+  
 
 const shouldShowUploadMoreBtn = (options: FilePickerContentProps['options'], length: number) => {
   if (options && options.maxFiles) {
@@ -56,6 +59,9 @@ export const FilePickerContent = ({
   errorMessage
 }: FilePickerContentProps) => {
   const shouldShowError = errorMessage;
+  console.log(shouldShowError);
+  console.log(step);
+
   switch (step) {
     case STEPS.select: {
       return (
@@ -157,7 +163,7 @@ export const FilePickerContent = ({
             </div>
           </div>
           <FilePickerDropZone getRootProps={getRootProps} getInputProps={getInputProps} />
-          {shouldShowError && <div className={ERROR_STYLES}>{errorMessage}</div>}
+          {shouldShowError && <div className={ERROR_STYLES}>{shouldShowError}</div>}
 
         </>
       );
