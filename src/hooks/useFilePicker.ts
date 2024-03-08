@@ -29,6 +29,7 @@ type UseFilePickerOptions = {
 
 export const useFilePicker = ({
   uploadCallback,
+  errorCallback,
   controlledValue,
   onChange,
 }: UseFilePickerOptions): FilePickerState => {
@@ -251,7 +252,7 @@ export const useFilePicker = ({
         .catch(error => {        
           setError(error.response.data.error);                   
           setStep(STEPS.error);    
-            
+          errorCallback(error.response.data.error); 
         });
       }
     });
