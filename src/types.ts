@@ -44,6 +44,7 @@ export type CommonFileInputProps = {
   workspace?: string;
   apiKey?: string;
   uploadHost?: string;
+  errorCallback?:( error: any) => void;
 };
 
 export type FilestackFileInputProps = CommonFileInputProps & {

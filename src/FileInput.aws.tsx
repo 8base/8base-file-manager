@@ -69,6 +69,7 @@ export const FileInputAws: React.FC<AWSFileInputProps> = ({
   fallbackOptions,
   value: controlledValue = null,
   onUploadDone: uploadCallback,
+  errorCallback,
   onChange,
   useFilestack = false,
   workspace,
@@ -95,7 +96,7 @@ export const FileInputAws: React.FC<AWSFileInputProps> = ({
     value,
     originalFile,
     error,
-  } = useFilePicker({ uploadCallback, controlledValue, onChange });
+  } = useFilePicker({ uploadCallback, controlledValue, onChange ,errorCallback});
   console.log(error);
 
   const pick = useCallback(
