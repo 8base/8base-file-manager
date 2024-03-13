@@ -97,7 +97,7 @@ export const FileInputAws: React.FC<AWSFileInputProps> = ({
     originalFile,
     error,
   } = useFilePicker({ uploadCallback, controlledValue, onChange ,errorCallback});
-  console.log(error);
+  //console.log(error);
 
   const pick = useCallback(
     (pickerOptions: PickerOptions = {}) => {
@@ -122,7 +122,7 @@ export const FileInputAws: React.FC<AWSFileInputProps> = ({
 
   const handleAWSUpload = () => {
     // eslint-disable-next-line no-console
-    console.log(useFilestack, workspace, apiKey, uploadHost, environment);
+    //console.log(useFilestack, workspace, apiKey, uploadHost, environment);
     upload(useFilestack, workspace, apiKey, uploadHost, environment);
   };
 

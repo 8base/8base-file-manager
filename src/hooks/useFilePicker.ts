@@ -127,7 +127,7 @@ export const useFilePicker = ({
       let currentList = [...list];
       return (index: number) => (progress: number) => {
         const newList = [...currentList];
-        console.log(newList);
+        //console.log(newList);
         newList[index] = progress;
         currentList = [...newList];
         setFileProgressList(newList);
@@ -138,16 +138,16 @@ export const useFilePicker = ({
 
   const handleUploadDone = useCallback(
     (filesUploaded: FileValue[], file: File[]) => {
-      console.log("🚀 ~ newValue:", filesUploaded)
+      //console.log("🚀 ~ newValue:", filesUploaded)
       let newValue: FileInputState['value'] = [...filesUploaded];
-      console.log("🚀 ~ newValue:", newValue)
+      //console.log("🚀 ~ newValue:", newValue)
       let newOriginalFile: FileInputState['originalFile'] = [...file];
-      console.log("🚀 ~ newOriginalFile:", newOriginalFile)
+      //console.log("🚀 ~ newOriginalFile:", newOriginalFile)
       
       const { maxFiles } = options;
 
-      console.log("🚀 ~ newOriginalFile:", maxFiles)
-      console.log("🚀 ~ options:", options)
+      //console.log("🚀 ~ newOriginalFile:", maxFiles)
+      //console.log("🚀 ~ options:", options)
 
       if (maxFiles === 1) {
         newValue = newValue[0];
@@ -172,10 +172,10 @@ export const useFilePicker = ({
 
   const upload = useCallback(( useFilestack, workspace, apiKey, uploadHost, environment ) => {
 
-    console.log("🚀 ~ upload ~ workspace:", workspace)
-    console.log("🚀 ~ upload ~ apiKey:", apiKey)
-    console.log("🚀 ~ upload ~ uploadHost:", uploadHost)
-    console.log("🚀 ~ upload ~ environment:", environment)
+    //console.log("🚀 ~ upload ~ workspace:", workspace)
+    //console.log("🚀 ~ upload ~ apiKey:", apiKey)
+    //console.log("🚀 ~ upload ~ uploadHost:", uploadHost)
+    //console.log("🚀 ~ upload ~ environment:", environment)
 
     const newProgressList = fileList.map(el => 0);
     setFileProgressList(newProgressList);
@@ -190,7 +190,7 @@ export const useFilePicker = ({
     const uploadedOriginalFileList: File[] = [];
 
     const handleProgress = onProgress(newProgressList);
-    console.log(fileList);
+    //console.log(fileList);
     const loadFiles = fileList.map((file, index) => {
       const formdata = new FormData();
       if (useFilestack) {
@@ -246,7 +246,7 @@ export const useFilePicker = ({
               public: response.data.data[0].public,
             });
           } else {
-            console.log('uploaded file with error', file)
+            //console.log('uploaded file with error', file)
           }
         })
         .catch(error => {        

@@ -59,8 +59,8 @@ export const FilePickerContent = ({
   errorMessage
 }: FilePickerContentProps) => {
   const shouldShowError = errorMessage;
-  console.log(shouldShowError);
-  console.log(step);
+  //console.log(shouldShowError);
+  //console.log(step);
 
   switch (step) {
     case STEPS.select: {
