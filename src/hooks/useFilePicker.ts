@@ -226,8 +226,9 @@ export const useFilePicker = ({
           }
         });
       } else {
+        const actualUploadHost = uploadHost || 'https://file-manager.8base.com';
         formdata.append('files', file, file.name);
-        return axios.post(uploadHost + '/upload', formdata, {
+        return axios.post(actualUploadHost + '/upload', formdata, {
           headers: {
             'authorization': apiKey,
             'workspace': workspace,
