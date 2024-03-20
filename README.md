@@ -16,7 +16,7 @@ npm install @8base/file-manager --save
 1- Import the package using the following snippet when you want to use it in your project.
 
 ```js
-import { FileManager } from '@8base/file-manager';
+import { FileInput } from '@8base/file-manager';
 ```
 2- Create a new instance of the `FileManager` class and pass an object with the required configuration parameters. The available options are:
 
